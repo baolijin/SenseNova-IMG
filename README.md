@@ -1,5 +1,7 @@
 # Nova Atelier
 
+![Nova Atelier 效果预览](arts/preview.png)
+
 由 SenseNova **U1.5 Lite** 与 **U1.5 Fast** 驱动的本地图像创作工作台。用自然语言生成图片、上传参考图创作，或在当前画布上继续编辑；Agent 会自动选择模型，并在生成后做一轮细节精修。
 
 这是一个可本地运行的交互原型：零前端构建、零第三方运行时依赖，只需 Node.js。
