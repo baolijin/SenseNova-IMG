@@ -1,0 +1,18 @@
+{
+  "name": "nova-atelier",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A local agentic image creation studio powered by SenseNova U1.5 Lite and Fast.",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "package:win": "node scripts/build-sea.js --platform win --arch x64",
+    "package:win:arm64": "node scripts/build-sea.js --platform win --arch arm64",
+    "package:mac": "node scripts/build-sea.js --platform mac",
+    "package:mac:x64": "node scripts/build-sea.js --platform mac --arch x64",
+    "package:current": "node scripts/build-sea.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

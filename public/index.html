@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#08090b" />
+  <meta name="description" content="Nova Atelier — 由 SenseNova U1.5 Lite 与 Fast 驱动的智能图像创作工作台" />
+  <title>Nova Atelier · SenseNova U1.5</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark"><span>N</span><i></i></div>
+        <div class="brand-copy">
+          <strong>Nova Atelier</strong>
+          <span>SenseNova U1.5 · Agentic Studio</span>
+        </div>
+      </div>
+      <div class="model-duo" aria-label="集成模型">
+        <span class="duo-chip"><i class="duo-dot lite"></i>U1.5 Lite</span>
+        <span class="duo-slash">/</span>
+        <span class="duo-chip"><i class="duo-dot fast"></i>U1.5 Fast</span>
+      </div>
+      <div class="mobile-switch" role="tablist" aria-label="移动端视图">
+        <button class="mobile-tab active" data-action="mobile-tab" data-view="chat" role="tab">
+          <i data-icon="message"></i><span>对话</span>
+        </button>
+        <button class="mobile-tab" data-action="mobile-tab" data-view="stage" role="tab">
+          <i data-icon="image"></i><span>画布</span>
+        </button>
+      </div>
+      <div class="top-actions">
+        <button class="ghost-btn hide-tablet" data-action="open-history">
+          <i data-icon="clock"></i><span>会话</span>
+        </button>
+        <button class="icon-btn inspector-trigger" data-action="open-inspector" aria-label="打开创作参数">
+          <i data-icon="sliders"></i>
+        </button>
+        <button class="status-pill" id="connStatus" data-action="open-key">
+          <span class="status-dot"></span><span id="connText">检测中</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="chat-pane">
+        <div class="pane-head">
+          <div class="pane-title">
+            <span class="eyebrow">CREATIVE AGENT</span>
+            <h1 id="sessionTitle">未命名创作</h1>
+          </div>
+          <div class="pane-head-actions">
+            <button class="icon-btn" data-action="open-history" aria-label="历史会话" title="历史会话">
+              <i data-icon="clock"></i>
+            </button>
+            <button class="icon-btn accent" data-action="new-session" aria-label="新建会话" title="新建会话">
+              <i data-icon="plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="chat-scroll" id="chatScroll" aria-live="polite"></div>
+
+        <div class="composer-shell">
+          <div class="ref-tray" id="refTray"></div>
+          <div class="mode-row" id="modeRow"></div>
+          <div class="composer" id="composer">
+            <textarea id="promptInput" rows="1" placeholder="描述你想创作或修改的画面…" spellcheck="false"></textarea>
+            <div class="composer-foot">
+              <div class="composer-tools">
+                <button class="mini-btn" data-action="add-ref" title="添加参考图">
+                  <i data-icon="image"></i><span>参考图</span>
+                </button>
+                <span class="composer-hint" id="composerHint"></span>
+              </div>
+              <div class="send-wrap">
+                <span class="kbd-hint">↵</span>
+                <button class="send-btn" id="sendBtn" data-action="send" aria-label="发送">
+                  <i data-icon="arrow-up"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="run-note" id="runNote">
+            <i data-icon="sparkles"></i>
+            <span>Agent 会自动规划、选择模型并执行</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage-pane">
+        <div class="stage-head">
+          <div class="stage-title">
+            <span class="stage-kicker">CANVAS</span>
+            <div class="stage-title-copy">
+              <strong id="stageTitle">空白画布</strong>
+              <span id="stageMeta">等待第一笔</span>
+            </div>
+          </div>
+          <div class="stage-actions" id="stageActions"></div>
+        </div>
+        <div class="stage-host" id="stageHost"></div>
+        <div class="filmstrip-wrap">
+          <div class="filmstrip-label">
+            <span>版本</span>
+            <span id="versionCount">0</span>
+          </div>
+          <div class="filmstrip" id="filmstrip"></div>
+        </div>
+      </section>
+
+      <aside class="inspector" id="inspector" aria-label="创作参数">
+        <div class="inspector-head">
+          <div>
+            <span class="eyebrow">DIRECTOR</span>
+            <h2>创作参数</h2>
+          </div>
+          <button class="icon-btn inspector-close" data-action="close-inspector" aria-label="关闭参数">
+            <i data-icon="x"></i>
+          </button>
+        </div>
+        <div class="inspector-scroll" id="inspectorBody"></div>
+      </aside>
+    </main>
+    <div class="scrim" id="scrim" data-action="close-drawers"></div>
+  </div>
+
+  <aside class="history-drawer" id="historyDrawer" aria-label="历史会话">
+    <div class="drawer-head">
+      <div>
+        <span class="eyebrow">ARCHIVE</span>
+        <h2>创作会话</h2>
+      </div>
+      <button class="icon-btn" data-action="close-drawers" aria-label="关闭">
+        <i data-icon="x"></i>
+      </button>
+    </div>
+    <button class="new-session-btn" data-action="new-session">
+      <i data-icon="plus"></i><span>新建创作会话</span>
+    </button>
+    <div class="session-list" id="sessionList"></div>
+    <div class="drawer-foot">
+      <span>图片与元数据保存在本地</span>
+      <button class="text-link" data-action="open-key">API 设置</button>
+    </div>
+  </aside>
+
+  <div class="modal-layer" id="keyModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="keyModalTitle">
+      <div class="modal-top">
+        <div class="key-glyph"><i data-icon="key"></i></div>
+        <button class="icon-btn" data-action="close-key" aria-label="关闭">
+          <i data-icon="x"></i>
+        </button>
+      </div>
+      <span class="eyebrow">CONNECTION</span>
+      <h2 id="keyModalTitle">连接 SenseNova</h2>
+      <p class="modal-lede">填入 SenseNova 控制台申请的 API Key，即可调用 U1.5 Lite 与 Fast。密钥只保存在本机浏览器，并通过本地代理转发。</p>
+      <label class="field" for="keyInput">
+        <span>API Key</span>
+        <div class="input-wrap">
+          <i data-icon="lock"></i>
+          <input id="keyInput" type="password" autocomplete="off" spellcheck="false" placeholder="sk-..." />
+          <button class="eye-btn" data-action="toggle-key" aria-label="显示或隐藏密钥">
+            <i data-icon="eye"></i>
+          </button>
+        </div>
+      </label>
+      <div class="key-alt">
+        <span>或使用服务端环境变量</span>
+        <code>SENSENOVA_API_KEY=sk-... npm start</code>
+      </div>
+      <button class="primary-btn" data-action="save-key">保存并连接</button>
+      <button class="text-btn" data-action="use-demo">先以演示模式体验</button>
+      <p class="modal-fine">未配置密钥时会生成本地演示画面，用于体验完整的 Agent 交互流程。</p>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toastStack"></div>
+  <div class="drop-overlay" id="dropOverlay">
+    <div>
+      <i data-icon="image"></i>
+      <span>松开以添加参考图</span>
+      <small>最多 5 张 · 主图将作为编辑对象</small>
+    </div>
+  </div>
+  <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden />
+
+  <script src="/js/core.js" defer></script>
+  <script src="/js/demo.js" defer></script>
+  <script src="/js/render.js" defer></script>
+  <script src="/js/agent.js" defer></script>
+  <script src="/js/events.js" defer></script>
+</body>
+</html>
